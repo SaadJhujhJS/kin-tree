@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
 
+const authRoutes = require("./routes/authRoutes");
+const familyTreeRoutes = require("./routes/familyTreeRoutes");
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 connectDB();
 
 app.use("/api/auth", authRoutes);
+app.use("/api/family-trees", familyTreeRoutes);
 
 const PORT = process.env.PORT || 5000;
 
