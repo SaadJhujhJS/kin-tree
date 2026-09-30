@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const familyTreeRoutes = require("./routes/familyTreeRoutes");
 const familyMemberRoutes = require("./routes/familyMemberRoutes");
+const relationshipRoutes = require("./routes/relationshipRoutes");
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/family-trees", familyTreeRoutes);
 app.use("/api/family-members", familyMemberRoutes);
+app.use("/api/relationships", relationshipRoutes);
 
 const PORT = process.env.PORT || 5000;
 
