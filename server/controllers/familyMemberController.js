@@ -123,8 +123,105 @@ const getFamilyMember = async (req, res) => {
   }
 };
 
+const updateFamilyMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const familyMember = await FamilyMember.findById(id);
+
+    if (!familyMember) {
+      return res.status(404).json({
+        message: "Family member not found",
+      });
+    }
+
+    // Check that the family tree belongs to logged-in user
+    const familyTree = await FamilyTree.findOne({
+      _id: familyMember.familyTree,
+      owner: req.userId,
+    });
+
+    if (!familyTree) {
+      return res.status(403).json({
+        message: "You are not authorized to update this member",
+      });
+    }
+
+    const {
+      name,
+      profilePhoto,
+      gender,
+      dateOfBirth,
+      dateOfDeath,
+      email,
+      phone,
+      bio,
+    } = req.body;
+
+    familyMember.name = name ?? familyMember.name;
+    familyMember.profilePhoto = profilePhoto ?? familyMember.profilePhoto;
+    familyMember.gender = gender ?? familyMember.gender;
+    familyMember.dateOfBirth = dateOfBirth ?? familyMember.dateOfBirth;
+    familyMember.dateOfDeath = dateOfDeath ?? familyMember.dateOfDeath;
+    familyMember.email = email ?? familyMember.email;
+    familyMember.phone = phone ?? familyMember.phone;
+    familyMember.bio = bio ?? familyMember.bio;
+
+    await familyMember.save();
+
+    res.status(200).json({
+      message: "Family member updated successfully",
+      familyMember,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const deleteFamilyMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const familyMember = await FamilyMember.findById(id);
+
+    if (!familyMember) {
+      return res.status(404).json({
+        message: "Family member not found",
+      });
+    }
+
+    // Check that the family tree belongs to logged-in user
+    const familyTree = await FamilyTree.findOne({
+      _id: familyMember.familyTree,
+      owner: req.userId,
+    });
+
+    if (!familyTree) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this member",
+      });
+    }
+
+    await FamilyMember.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Family member deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createFamilyMember,
   getFamilyMembers,
   getFamilyMember,
+  updateFamilyMember,
+  deleteFamilyMember,
 };
