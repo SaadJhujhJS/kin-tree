@@ -74,7 +74,78 @@ const createRelationship = async (req, res) => {
     });
   }
 };
+const getRelationships = async (req, res) => {
+  try {
+    const { familyTreeId } = req.params;
+
+    // Check family tree ownership
+    const familyTree = await FamilyTree.findOne({
+      _id: familyTreeId,
+      owner: req.userId,
+    });
+
+    if (!familyTree) {
+      return res.status(404).json({
+        message: "Family tree not found",
+      });
+    }
+
+    const relationships = await Relationship.find({
+      familyTree: familyTreeId,
+    })
+      .populate("from", "name gender profilePhoto")
+      .populate("to", "name gender profilePhoto");
+
+    res.status(200).json({
+      relationships,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const deleteRelationship = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const relationship = await Relationship.findById(id);
+
+    if (!relationship) {
+      return res.status(404).json({
+        message: "Relationship not found",
+      });
+    }
+
+    // Check family tree ownership
+    const familyTree = await FamilyTree.findOne({
+      _id: relationship.familyTree,
+      owner: req.userId,
+    });
+
+    if (!familyTree) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this relationship",
+      });
+    }
+
+    await Relationship.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Relationship deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   createRelationship,
+  getRelationships,
+  deleteRelationship,
 };

@@ -1,5 +1,6 @@
 const FamilyMember = require("../models/FamilyMember");
 const FamilyTree = require("../models/FamilyTree");
+const Relationship = require("../models/Relationship");
 
 const createFamilyMember = async (req, res) => {
   try {
@@ -193,7 +194,6 @@ const deleteFamilyMember = async (req, res) => {
       });
     }
 
-    // Check that the family tree belongs to logged-in user
     const familyTree = await FamilyTree.findOne({
       _id: familyMember.familyTree,
       owner: req.userId,
@@ -201,10 +201,19 @@ const deleteFamilyMember = async (req, res) => {
 
     if (!familyTree) {
       return res.status(403).json({
-        message: "You are not authorized to delete this member",
+        message: "You are not authorized to delete this family member",
       });
     }
 
+    // Delete relationships connected to this member
+    await Relationship.deleteMany({
+      $or: [
+        { from: id },
+        { to: id },
+      ],
+    });
+
+    // Delete the family member
     await FamilyMember.findByIdAndDelete(id);
 
     res.status(200).json({
