@@ -33,9 +33,9 @@ function EditMember() {
           },
         });
 
-        const member = response.data;
+        const member = response.data.familyMember;
 
-        setFamilyTreeId(member.familyMember);
+        setFamilyTreeId(member.familyTree);
 
         setFormData({
           name: member.name || "",

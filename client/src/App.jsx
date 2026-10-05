@@ -8,6 +8,7 @@ import FamilyTreeDetails from "./pages/FamilyTreeDetails";
 import AddMember from "./pages/AddMember";
 import MemberDetails from "./pages/MemberDetails";
 import EditMember from "./pages/EditMember";
+import AddRelationship from "./pages/AddRelationship";
 
 function Home() {
   return (
@@ -65,6 +66,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditMember />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/family-trees/:id/relationships/new"
+            element={
+              <ProtectedRoute>
+                <AddRelationship />
               </ProtectedRoute>
             }
           />

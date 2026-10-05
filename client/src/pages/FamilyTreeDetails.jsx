@@ -55,6 +55,41 @@ function FamilyTreeDetails() {
     );
   }
 
+  const handleDeleteRelationship = async (relationshipId) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this relationship?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    await api.delete(
+      `/relationships/${relationshipId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setRelationships((currentRelationships) =>
+      currentRelationships.filter(
+        (relationship) =>
+          relationship._id !== relationshipId
+      )
+    );
+  } catch (error) {
+    setMessage(
+      error.response?.data?.message ||
+        "Failed to delete relationship"
+    );
+  }
+};
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-5xl mx-auto p-6">
@@ -127,25 +162,46 @@ function FamilyTreeDetails() {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Relationships</h2>
-
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold mb-4">Relationships</h2>
+            <button
+              onClick={() => navigate(`/family-trees/${id}/relationships/new`)}
+              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+              + Add Relationship
+            </button>
+          </div>
           {relationships.length === 0 ? (
             <p className="text-gray-500">No relationships added yet.</p>
           ) : (
             <div className="space-y-2">
               {relationships.map((relationship) => (
-                <div key={relationship._id} className="border rounded p-3">
-                  <span className="font-semibold">
-                    {relationship.from?.name}
-                  </span>
+                <div
+                  key={relationship._id}
+                  className="border rounded p-3 flex justify-between items-center"
+                >
+                  <div>
+                    <span className="font-semibold">
+                      {relationship.from?.name}
+                    </span>
 
-                  {" → "}
+                    {" → "}
 
-                  <span className="capitalize">{relationship.type}</span>
+                    <span className="capitalize">{relationship.type}</span>
 
-                  {" → "}
+                    {" → "}
 
-                  <span className="font-semibold">{relationship.to?.name}</span>
+                    <span className="font-semibold">
+                      {relationship.to?.name}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => handleDeleteRelationship(relationship._id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>
