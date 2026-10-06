@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import FamilyTreeGraph from "../components/FamilyTreeGraph";
 import api from "../services/api";
 
 function FamilyTreeDetails() {
@@ -56,39 +57,34 @@ function FamilyTreeDetails() {
   }
 
   const handleDeleteRelationship = async (relationshipId) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this relationship?"
-  );
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this relationship?",
+    );
 
-  if (!confirmed) {
-    return;
-  }
+    if (!confirmed) {
+      return;
+    }
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.delete(
-      `/relationships/${relationshipId}`,
-      {
+      await api.delete(`/relationships/${relationshipId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
 
-    setRelationships((currentRelationships) =>
-      currentRelationships.filter(
-        (relationship) =>
-          relationship._id !== relationshipId
-      )
-    );
-  } catch (error) {
-    setMessage(
-      error.response?.data?.message ||
-        "Failed to delete relationship"
-    );
-  }
-};
+      setRelationships((currentRelationships) =>
+        currentRelationships.filter(
+          (relationship) => relationship._id !== relationshipId,
+        ),
+      );
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message || "Failed to delete relationship",
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -206,6 +202,15 @@ function FamilyTreeDetails() {
               ))}
             </div>
           )}
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Family Tree</h2>
+
+          <FamilyTreeGraph
+            familyMembers={familyMembers}
+            relationships={relationships}
+          />
         </div>
       </div>
     </div>

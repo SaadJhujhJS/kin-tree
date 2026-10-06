@@ -1,0 +1,62 @@
+import { ReactFlow, Background, Controls, MiniMap } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useNavigate } from "react-router-dom";
+
+function FamilyTreeGraph({ familyMembers, relationships }) {
+  const navigate = useNavigate();
+  const nodes = familyMembers.map((member, index) => ({
+    id: member._id,
+    position: {
+      x: (index % 3) * 250,
+      y: Math.floor(index / 3) * 180,
+    },
+    data: {
+      label: (
+        <div
+          className="w-40 text-center cursor-pointer"
+          onClick={() => navigate(`/family-members/${member._id}`)}
+        >
+          {member.profilePhoto ? (
+            <img
+              src={member.profilePhoto}
+              alt={member.name}
+              className="w-16 h-16 rounded-full object-cover mx-auto mb-2"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center mx-auto mb-2">
+              <span className="text-gray-600 text-xl">
+                {member.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+
+          <div className="font-bold text-sm">{member.name}</div>
+
+          <div className="text-xs text-gray-500 capitalize">
+            {member.gender}
+          </div>
+        </div>
+      ),
+    },
+  }));
+
+  const edges = relationships.map((relationship) => ({
+    id: relationship._id,
+    source: relationship.from?._id,
+    target: relationship.to?._id,
+    label: relationship.type,
+    animated: false,
+  }));
+
+  return (
+    <div className="w-full h-120 border rounded-lg bg-white">
+      <ReactFlow nodes={nodes} edges={edges} fitView>
+        <Background />
+        <Controls />
+        <MiniMap />
+      </ReactFlow>
+    </div>
+  );
+}
+
+export default FamilyTreeGraph;
