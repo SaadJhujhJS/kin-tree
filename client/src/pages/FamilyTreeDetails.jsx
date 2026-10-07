@@ -205,7 +205,10 @@ function FamilyTreeDetails() {
         </div>
 
         <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Family Tree</h2>
+          <h2 className="text-2xl font-bold mb-2">Family Tree</h2>
+          <p className="text-gray-500 mb-4 text-sm">
+            Click on a family member to view their details.
+          </p>
 
           <FamilyTreeGraph
             familyMembers={familyMembers}
