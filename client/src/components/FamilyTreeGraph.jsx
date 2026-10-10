@@ -13,7 +13,7 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     data: {
       label: (
         <div
-          className="w-40 text-center bg-white rounded-lg shadow-md p-3 border cursor-pointer"
+          className="w-40 text-center bg-white rounded-lg shadow-md p-3 border cursor-pointer  hover:shadow-lg hover:border-blue-400 transition-all duration-300"
           onClick={() => navigate(`/family-members/${member._id}`)}
         >
           {member.profilePhoto ? (
@@ -47,6 +47,9 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     label: relationship.type,
     type: "smoothstep",
     animated: true,
+    markerEnd: {
+    type: "arrowclosed",
+  },
   }));
 
   return (
