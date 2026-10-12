@@ -40,17 +40,34 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     },
   }));
 
-  const edges = relationships.map((relationship) => ({
-    id: relationship._id,
-    source: relationship.from?._id,
-    target: relationship.to?._id,
-    label: relationship.type,
-    type: "smoothstep",
-    animated: true,
-    markerEnd: {
+  
+const edges = relationships.map((relationship) => ({
+  id: relationship._id,
+  source: relationship.from?._id,
+  target: relationship.to?._id,
+  label:
+    relationship.type.charAt(0).toUpperCase() +
+    relationship.type.slice(1),
+  type: "smoothstep",
+  animated: true,
+  markerEnd: {
     type: "arrowclosed",
   },
-  }));
+  style: {
+    strokeWidth: 2,
+  },
+  labelStyle: {
+    fill: "#374151",
+    fontWeight: 600,
+    fontSize: 12,
+  },
+  labelBgStyle: {
+    fill: "#ffffff",
+  },
+  labelBgPadding: [6, 3],
+  labelBgBorderRadius: 4,
+}));
+
 
   return (
     <div className="w-full h-120 border rounded-lg bg-white overflow-hidden">
