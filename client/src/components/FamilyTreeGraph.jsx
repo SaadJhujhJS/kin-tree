@@ -1,4 +1,4 @@
-import { ReactFlow, Background, Controls, MiniMap } from "@xyflow/react";
+import { ReactFlow, Background, Controls, MiniMap, Panel } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useNavigate } from "react-router-dom";
 
@@ -40,41 +40,47 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     },
   }));
 
-  
-const edges = relationships.map((relationship) => ({
-  id: relationship._id,
-  source: relationship.from?._id,
-  target: relationship.to?._id,
-  label:
-    relationship.type.charAt(0).toUpperCase() +
-    relationship.type.slice(1),
-  type: "smoothstep",
-  animated: true,
-  markerEnd: {
-    type: "arrowclosed",
-  },
-  style: {
-    strokeWidth: 2,
-  },
-  labelStyle: {
-    fill: "#374151",
-    fontWeight: 600,
-    fontSize: 12,
-  },
-  labelBgStyle: {
-    fill: "#ffffff",
-  },
-  labelBgPadding: [6, 3],
-  labelBgBorderRadius: 4,
-}));
-
+  const edges = relationships.map((relationship) => ({
+    id: relationship._id,
+    source: relationship.from?._id,
+    target: relationship.to?._id,
+    label:
+      relationship.type.charAt(0).toUpperCase() + relationship.type.slice(1),
+    type: "smoothstep",
+    animated: true,
+    markerEnd: {
+      type: "arrowclosed",
+    },
+    style: {
+      stroke: "#64748b",
+      strokeWidth: 2,
+    },
+    labelStyle: {
+      fill: "#334155",
+      fontWeight: 600,
+      fontSize: 12,
+    },
+    labelBgStyle: {
+      fill: "#ffffff",
+    },
+    labelBgPadding: [6, 3],
+    labelBgBorderRadius: 4,
+  }));
 
   return (
     <div className="w-full h-120 border rounded-lg bg-white overflow-hidden">
       <ReactFlow nodes={nodes} edges={edges} fitView>
-        <Background />
+        <Background variant="dots" gap={16} size={1} />
         <Controls />
         <MiniMap />
+        <Panel position="top-right">
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-white border rounded-md px-3 py-2 shadow-sm text-sm"
+          >
+            Refresh Tree
+          </button>
+        </Panel>
       </ReactFlow>
     </div>
   );
