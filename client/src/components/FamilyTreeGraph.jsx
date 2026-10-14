@@ -1,4 +1,11 @@
-import { ReactFlow, Background, Controls, MiniMap, Panel } from "@xyflow/react";
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  Panel,
+  useReactFlow,
+} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useNavigate } from "react-router-dom";
 
@@ -67,20 +74,28 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     labelBgBorderRadius: 4,
   }));
 
+  function FitViewButton() {
+    const { fitView } = useReactFlow();
+
+    return (
+      <Panel position="top-right">
+        <button
+          onClick={() => fitView({ padding: 0.2, duration: 500 })}
+          className="bg-white border rounded-md px-3 py-2 shadow-sm text-sm"
+        >
+          Fit Tree
+        </button>
+      </Panel>
+    );
+  }
+
   return (
     <div className="w-full h-120 border rounded-lg bg-white overflow-hidden">
       <ReactFlow nodes={nodes} edges={edges} fitView>
         <Background variant="dots" gap={16} size={1} />
         <Controls />
-        <MiniMap />
-        <Panel position="top-right">
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-white border rounded-md px-3 py-2 shadow-sm text-sm"
-          >
-            Refresh Tree
-          </button>
-        </Panel>
+        <MiniMap nodeStrokeWidth={3} zoomable pannable />
+        <FitViewButton />
       </ReactFlow>
     </div>
   );

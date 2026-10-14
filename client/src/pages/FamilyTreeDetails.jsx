@@ -38,7 +38,11 @@ function FamilyTreeDetails() {
   }, [id]);
 
   if (loading) {
-    return <div className="p-8 text-center">Loading...</div>;
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Loading family tree...
+      </div>
+    );
   }
 
   if (!familyTree) {
@@ -122,9 +126,15 @@ function FamilyTreeDetails() {
           </div>
 
           {familyMembers.length === 0 ? (
-            <p className="text-gray-500">
-              No family members yet. Add your first member.
-            </p>
+            <div className="bg-gray-50 border rounded-lg p-8 text-center">
+              <h3 className="text-lg font-semibold mb-2">
+                Your family tree is empty
+              </h3>
+
+              <p className="text-gray-500 mb-4">
+                Add your first family member to get started.
+              </p>
+            </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {familyMembers.map((member) => (
