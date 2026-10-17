@@ -7,16 +7,61 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import dagre from "@dagrejs/dagre";
 import { useNavigate } from "react-router-dom";
+
+const nodeWidth = 180;
+const nodeHeight = 150;
+
+function getLayoutedElements(nodes, edges) {
+  const graph = new dagre.graphlib.Graph();
+
+  graph.setDefaultEdgeLabel(() => ({}));
+
+  graph.setGraph({
+    rankdir: "TB",
+    nodesep: 80,
+    ranksep: 100,
+  });
+
+  nodes.forEach((node) => {
+    graph.setNode(node.id, {
+      width: nodeWidth,
+      height: nodeHeight,
+    });
+  });
+
+  edges.forEach((edge) => {
+    if (edge.source && edge.target) {
+      graph.setEdge(edge.source, edge.target);
+    }
+  });
+
+  dagre.layout(graph);
+
+  const layoutedNodes = nodes.map((node) => {
+    const position = graph.node(node.id);
+
+    return {
+      ...node,
+      position: {
+        x: position.x - nodeWidth / 2,
+        y: position.y - nodeHeight / 2,
+      },
+    };
+  });
+
+  return {
+    nodes: layoutedNodes,
+    edges,
+  };
+}
 
 function FamilyTreeGraph({ familyMembers, relationships }) {
   const navigate = useNavigate();
   const nodes = familyMembers.map((member, index) => ({
     id: member._id,
-    position: {
-      x: (index % 3) * 300,
-      y: Math.floor(index / 3) * 220,
-    },
+
     data: {
       label: (
         <div
@@ -54,7 +99,7 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     label:
       relationship.type.charAt(0).toUpperCase() + relationship.type.slice(1),
     type: "smoothstep",
-    animated: true,
+    animated: false,
     markerEnd: {
       type: "arrowclosed",
     },
@@ -69,10 +114,16 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     },
     labelBgStyle: {
       fill: "#ffffff",
+      fillOpacity: 0.95,
     },
     labelBgPadding: [6, 3],
     labelBgBorderRadius: 4,
   }));
+
+  const layoutedElements = getLayoutedElements(nodes, edges);
+
+  const layoutedNodes = layoutedElements.nodes;
+  const layoutedEdges = layoutedElements.edges;
 
   function FitViewButton() {
     const { fitView } = useReactFlow();
@@ -91,7 +142,7 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
 
   return (
     <div className="w-full h-120 border rounded-lg bg-white overflow-hidden">
-      <ReactFlow nodes={nodes} edges={edges} fitView>
+      <ReactFlow nodes={layoutedNodes} edges={layoutedEdges} fitView fitViewOptions={{ padding: 0.2 }}>
         <Background variant="dots" gap={16} size={1} />
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />
