@@ -98,7 +98,10 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
     target: relationship.to?._id,
     label:
       relationship.type.charAt(0).toUpperCase() + relationship.type.slice(1),
-    type: "smoothstep",
+    type:
+      relationship.type === "husband" || relationship.type === "wife"
+        ? "straight"
+        : "smoothstep",
     animated: false,
     markerEnd: {
       type: "arrowclosed",
@@ -116,7 +119,7 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
       fill: "#ffffff",
       fillOpacity: 0.95,
     },
-    labelBgPadding: [6, 3],
+    labelBgPadding: [5, 3],
     labelBgBorderRadius: 4,
   }));
 
@@ -142,7 +145,12 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
 
   return (
     <div className="w-full h-120 border rounded-lg bg-white overflow-hidden">
-      <ReactFlow nodes={layoutedNodes} edges={layoutedEdges} fitView fitViewOptions={{ padding: 0.2 }}>
+      <ReactFlow
+        nodes={layoutedNodes}
+        edges={layoutedEdges}
+        fitView
+        fitViewOptions={{ padding: 0.2 }}
+      >
         <Background variant="dots" gap={16} size={1} />
         <Controls />
         <MiniMap nodeStrokeWidth={3} zoomable pannable />

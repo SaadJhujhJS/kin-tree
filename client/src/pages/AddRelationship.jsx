@@ -22,20 +22,16 @@ function AddRelationship() {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await api.get(
-          `/family-members/tree/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await api.get(`/family-members/tree/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setMembers(response.data.familyMembers);
       } catch (error) {
         setMessage(
-          error.response?.data?.message ||
-            "Failed to load family members"
+          error.response?.data?.message || "Failed to load family members",
         );
       } finally {
         setLoading(false);
@@ -56,9 +52,12 @@ function AddRelationship() {
     e.preventDefault();
 
     if (formData.from === formData.to) {
-      setMessage(
-        "A person cannot have a relationship with themselves."
-      );
+      setMessage("A person cannot have a relationship with themselves.");
+      return;
+    }
+
+    if (!formData.from || !formData.to || !formData.type) {
+      setMessage("Please select both people and a relationship type.");
       return;
     }
 
@@ -80,14 +79,13 @@ function AddRelationship() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       navigate(`/family-trees/${id}`);
     } catch (error) {
       setMessage(
-        error.response?.data?.message ||
-          "Failed to create relationship"
+        error.response?.data?.message || "Failed to create relationship",
       );
     } finally {
       setSaving(false);
@@ -95,51 +93,35 @@ function AddRelationship() {
   };
 
   if (loading) {
-    return (
-      <div className="p-8 text-center">
-        Loading...
-      </div>
-    );
+    return <div className="p-8 text-center">Loading...</div>;
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-xl mx-auto p-6">
         <div className="bg-white p-8 rounded-lg shadow">
-          <h1 className="text-3xl font-bold mb-6">
-            Add Relationship
-          </h1>
+          <h1 className="text-3xl font-bold mb-6">Add Relationship</h1>
 
-          {message && (
-            <p className="text-red-600 mb-4">
-              {message}
-            </p>
-          )}
+          {message && <p className="text-red-600 mb-4">{message}</p>}
 
           {members.length < 2 ? (
             <div>
               <p className="text-gray-600 mb-6">
-                You need at least two family members to
-                create a relationship.
+                You need at least two family members to create a relationship.
               </p>
 
               <button
-                onClick={() =>
-                  navigate(`/family-trees/${id}`)
-                }
+                onClick={() => navigate(`/family-trees/${id}`)}
                 className="bg-gray-600 text-white px-5 py-2 rounded"
               >
                 Back
               </button>
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-5"
-            >
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block font-medium mb-1">
-                  Person
+                  First Person (relationship starts from)
                 </label>
 
                 <select
@@ -149,15 +131,10 @@ function AddRelationship() {
                   className="w-full border p-3 rounded"
                   required
                 >
-                  <option value="">
-                    Select person
-                  </option>
+                  <option value="">Select person</option>
 
                   {members.map((member) => (
-                    <option
-                      key={member._id}
-                      value={member._id}
-                    >
+                    <option key={member._id} value={member._id}>
                       {member.name}
                     </option>
                   ))}
@@ -165,9 +142,7 @@ function AddRelationship() {
               </div>
 
               <div>
-                <label className="block font-medium mb-1">
-                  Relationship
-                </label>
+                <label className="block font-medium mb-1">Relationship</label>
 
                 <select
                   name="type"
@@ -176,9 +151,7 @@ function AddRelationship() {
                   className="w-full border p-3 rounded"
                   required
                 >
-                  <option value="">
-                    Select relationship
-                  </option>
+                  <option value="">Select relationship</option>
 
                   <option value="father">Father</option>
                   <option value="mother">Mother</option>
@@ -190,10 +163,16 @@ function AddRelationship() {
                   <option value="sister">Sister</option>
                 </select>
               </div>
+              <p className="text-xs text-gray-500 -mt-3">
+                For Father or Mother, select the parent first and the child
+                second. For Son or Daughter, select the parent first and the son
+                or daughter second. For Husband or Wife, select the husband
+                first and the wife second.
+              </p>
 
               <div>
                 <label className="block font-medium mb-1">
-                  Related Person
+                  Second Person (relationship connects to)
                 </label>
 
                 <select
@@ -203,15 +182,10 @@ function AddRelationship() {
                   className="w-full border p-3 rounded"
                   required
                 >
-                  <option value="">
-                    Select related person
-                  </option>
+                  <option value="">Select related person</option>
 
                   {members.map((member) => (
-                    <option
-                      key={member._id}
-                      value={member._id}
-                    >
+                    <option key={member._id} value={member._id}>
                       {member.name}
                     </option>
                   ))}
@@ -224,16 +198,12 @@ function AddRelationship() {
                   disabled={saving}
                   className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {saving
-                    ? "Saving..."
-                    : "Add Relationship"}
+                  {saving ? "Saving..." : "Add Relationship"}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    navigate(`/family-trees/${id}`)
-                  }
+                  onClick={() => navigate(`/family-trees/${id}`)}
                   className="bg-gray-500 text-white px-6 py-3 rounded hover:bg-gray-600"
                 >
                   Cancel
