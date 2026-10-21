@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/sendEmail");
 
 const registerUser = async (req, res) => {
   try {
@@ -31,6 +32,16 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
+
+    if (user) {
+      // Send welcome email
+      const subject = "Welcome to KinTree!";
+      const message = `
+        <h1>Welcome to KinTree, ${user.name}!</h1>
+        <p>Thank you for registering. We're excited to have you on board!</p>
+      `;
+      await sendEmail({ email: user.email, subject, message });
+    }
 
     res.status(201).json({
       message: "User registered successfully",
