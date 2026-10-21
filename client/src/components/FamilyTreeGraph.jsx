@@ -13,16 +13,19 @@ import { useNavigate } from "react-router-dom";
 const nodeWidth = 180;
 const nodeHeight = 150;
 
+
 function getLayoutedElements(nodes, edges) {
   const graph = new dagre.graphlib.Graph();
 
   graph.setDefaultEdgeLabel(() => ({}));
-
   graph.setGraph({
-    rankdir: "TB",
-    nodesep: 80,
-    ranksep: 100,
-  });
+  rankdir: "TB",
+  nodesep: 20,
+  ranksep: 120,
+  marginx: 50,
+  marginy: 50,
+  edgesep: 20,
+});
 
   nodes.forEach((node) => {
     graph.setNode(node.id, {
@@ -31,8 +34,20 @@ function getLayoutedElements(nodes, edges) {
     });
   });
 
+  // Only parent-child relationships control the row layout.
+  const parentChildTypes = [
+    "Father",
+    "Mother",
+    "Son",
+    "Daughter",
+  ];
+
   edges.forEach((edge) => {
-    if (edge.source && edge.target) {
+    if (
+      edge.source &&
+      edge.target &&
+      parentChildTypes.includes(edge.label)
+    ) {
       graph.setEdge(edge.source, edge.target);
     }
   });
@@ -56,6 +71,7 @@ function getLayoutedElements(nodes, edges) {
     edges,
   };
 }
+
 
 function FamilyTreeGraph({ familyMembers, relationships }) {
   const navigate = useNavigate();
@@ -103,9 +119,7 @@ function FamilyTreeGraph({ familyMembers, relationships }) {
         ? "straight"
         : "smoothstep",
     animated: false,
-    markerEnd: {
-      type: "arrowclosed",
-    },
+    markerEnd: undefined,
     style: {
       stroke: "#64748b",
       strokeWidth: 2,
