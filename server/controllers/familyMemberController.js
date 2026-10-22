@@ -1,12 +1,12 @@
 const FamilyMember = require("../models/FamilyMember");
 const FamilyTree = require("../models/FamilyTree");
 const Relationship = require("../models/Relationship");
+const cloudinary = require('../config/cloudinary');
 
 const createFamilyMember = async (req, res) => {
   try {
     const {
       name,
-      profilePhoto,
       gender,
       dateOfBirth,
       dateOfDeath,
@@ -34,10 +34,16 @@ const createFamilyMember = async (req, res) => {
       });
     }
 
+    let profilePhotoUrl = '';
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      profilePhotoUrl = result.secure_url;
+    }
+
     const familyMember = await FamilyMember.create({
       familyTree: familyTreeId,
       name,
-      profilePhoto,
+      profilePhotoUrl,
       gender,
       dateOfBirth,
       dateOfDeath,
@@ -45,6 +51,8 @@ const createFamilyMember = async (req, res) => {
       phone,
       bio,
     });
+
+
 
     res.status(201).json({
       message: "Family member created successfully",
@@ -150,7 +158,6 @@ const updateFamilyMember = async (req, res) => {
 
     const {
       name,
-      profilePhoto,
       gender,
       dateOfBirth,
       dateOfDeath,
@@ -160,13 +167,17 @@ const updateFamilyMember = async (req, res) => {
     } = req.body;
 
     familyMember.name = name ?? familyMember.name;
-    familyMember.profilePhoto = profilePhoto ?? familyMember.profilePhoto;
     familyMember.gender = gender ?? familyMember.gender;
     familyMember.dateOfBirth = dateOfBirth ?? familyMember.dateOfBirth;
     familyMember.dateOfDeath = dateOfDeath ?? familyMember.dateOfDeath;
     familyMember.email = email ?? familyMember.email;
     familyMember.phone = phone ?? familyMember.phone;
     familyMember.bio = bio ?? familyMember.bio;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      familyMember.profilePhotoUrl = result.secure_url;
+    }
 
     await familyMember.save();
 

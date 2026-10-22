@@ -14,7 +14,7 @@ const familyMemberSchema = new mongoose.Schema(
       trim: true,
     },
 
-    profilePhoto: {
+    profilePhotoUrl: {
       type: String,
       default: "",
     },
