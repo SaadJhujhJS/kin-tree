@@ -156,14 +156,14 @@ function MemberDetails() {
               onClick={() =>
                 navigate(`/family-members/${member._id}/edit`)
               }
-              className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 cursor-pointer"
             >
               Edit
             </button>
 
             <button
               onClick={handleDelete}
-              className="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-700"
+              className="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-700 cursor-pointer"
             >
               Delete
             </button>
@@ -172,7 +172,7 @@ function MemberDetails() {
               onClick={() =>
                 navigate(`/family-trees/${member.familyTree}`)
               }
-              className="bg-gray-500 text-white px-5 py-2 rounded hover:bg-gray-600"
+              className="bg-gray-500 text-white px-5 py-2 rounded hover:bg-gray-600 cursor-pointer"
             >
               Back
             </button>

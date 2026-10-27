@@ -105,7 +105,7 @@ function FamilyTreeDetails() {
 
           <button
             onClick={() => navigate("/family-trees")}
-            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 cursor-pointer"
           >
             Back
           </button>
@@ -119,7 +119,7 @@ function FamilyTreeDetails() {
 
             <button
               onClick={() => navigate(`/family-trees/${id}/members/new`)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
             >
               + Add Member
             </button>
@@ -156,7 +156,7 @@ function FamilyTreeDetails() {
                     </div>
                     <button
                       onClick={() => navigate(`/family-members/${member._id}`)}
-                      className="block mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      className="block mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
                     >
                       View Details
                     </button>
@@ -172,7 +172,7 @@ function FamilyTreeDetails() {
             <h2 className="text-xl font-semibold mb-4">Relationships</h2>
             <button
               onClick={() => navigate(`/family-trees/${id}/relationships/new`)}
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 cursor-pointer"
             >
               + Add Relationship
             </button>
@@ -204,7 +204,7 @@ function FamilyTreeDetails() {
 
                   <button
                     onClick={() => handleDeleteRelationship(relationship._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 cursor-pointer"
                   >
                     Delete
                   </button>
