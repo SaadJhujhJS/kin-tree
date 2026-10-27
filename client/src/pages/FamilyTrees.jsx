@@ -84,7 +84,7 @@ function FamilyTrees() {
 
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
           >
             Logout
           </button>
@@ -107,7 +107,7 @@ function FamilyTrees() {
 
             <button
               type="submit"
-              className="bg-blue-600 text-white px-5 rounded hover:bg-blue-700"
+              className="bg-blue-600 text-white px-5 rounded hover:bg-blue-700 cursor-pointer"
             >
               Create
             </button>
